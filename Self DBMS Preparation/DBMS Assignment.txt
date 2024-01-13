@@ -1,0 +1,993 @@
+// ALGORITHM TO CREATE DATABASE AND STORE VALUES
+
+CREATE,INSERT,UPDATE DELETE,PK,FK,CHECK,UNIQUE,NOT NULL,ALTER,TRUNCATE,DROP,AUTO INCREMENT
+------------------------------------------------------------------------------------------
+CREATE DATABASE IF NOT EXISTS Assignment;
+USE Assignment;
+
+CREATE TABLE Restaurant
+(ResId VARCHAR(20) primary key UNIQUE NOT NULL,
+Name varchar(50),
+Location varchar(50),
+Rating int(5)
+);
+
+CREATE TABLE Employee (
+    EmpId INT AUTO_INCREMENT PRIMARY KEY,
+    EmpName VARCHAR(50) NOT NULL,
+    Role VARCHAR(20),
+    ResId VARCHAR(20),
+    FOREIGN KEY (ResId) REFERENCES Restaurant (ResId)
+);
+
+
+
+CREATE TABLE Customer
+(CusId VARCHAR(20) PRIMARY KEY Not null,
+FirstName varchar (15),
+LastName varchar(15),
+Email varchar (30),
+PhoneNo varchar (15)
+);
+
+CREATE TABLE Food
+(FoodId VARCHAR(20) PRIMARY KEY,
+FoodName varchar(20),
+Price int(10),
+ResId VARCHAR(20),
+Foreign key(ResId) references Restaurant(ResId)
+);
+
+
+CREATE TABLE Billing
+(BillId VARCHAR(20) PRIMARY KEY,
+Date date,
+FoodName varchar(50),
+Quantity int(20),
+TotalAmt int(10),
+CusId VARCHAR(20),
+foreign key(CusId) references Customer(CusId),
+ResId VARCHAR(20),
+Foreign key(ResId) references Restaurant(ResId)
+);
+
+
+
+
+
+
+DESC Restaurant;
+
+INSERT INTO Restaurant values('R001','Arsalan Biryani','Baruipur, Kolkata 144',5);
+INSERT INTO Restaurant values('R002','New chicken Biryani','Subhasgram, Kolkata 147',5);
+INSERT INTO Restaurant values('R003','Babu Hotel','Hatisala, Kolkata 135',5);
+INSERT INTO Restaurant values('R004','Asma Dhaba','Baruipur Station, Kolkata 144',4);
+INSERT INTO Restaurant values('R005','Saiqa Hotel','Parkcicus Station, Kolkata 100',4);
+INSERT INTO Restaurant values('R006','Awesome Restaurant','Bidhannagar, Kolkata 97',4);
+
+SELECT * FROM restaurant;
+
+DESC Employee;
+INSERT INTO Employee values('1','Manish','Waiter','R001');
+INSERT INTO Employee values('2','Nitin','Waiter','R002');
+INSERT INTO Employee values('3','Najmur','Manager','R003');
+INSERT INTO Employee values('4','Vikas','Chef','R004');
+INSERT INTO Employee values('5','Mahesh','Security','R005');
+INSERT INTO Employee values('6','Minni','Receptionist','R006');
+
+SELECT * FROM Employee;
+
+DESC Customer;
+
+INSERT INTO customer values('C001','Rehan','Hossain','rehankayal@gmail.com','9564256984');
+INSERT INTO customer values('C002','Subodh','Nag','subodhnag1@gmail.com','8569874563');
+INSERT INTO customer values('C003','Rahul','Kayal','rahulkayal201@gmail.com','9564258526');
+INSERT INTO customer values('C004','Badsha','Sk','badshabhota@gmail.com','9564252584');
+INSERT INTO customer values('C005','Achintya','Gupta','agupta69@gmail.com','9564259630');
+INSERT INTO customer values('C006','Nitin','Prakash','nitinprakash@gmail.com','9632256984');
+
+
+SELECT * FROM Customer;
+
+
+DESC Food;
+
+ALTER TABLE Food MODIFY Foodname varchar(50);
+
+
+INSERT INTO food values('F001','Mutton Biryani',950,'R001');
+INSERT INTO food values('F002','Chicken Biryani',450,'R002');
+INSERT INTO food values('F003','Special Mutton Chaap',1050,'R003');
+INSERT INTO food values('F004','Mutton Biryani w/ Potato',1000,'R004');
+INSERT INTO food values('F005','Plain Rice w/ Mutton',350,'R005');
+INSERT INTO food values('F006','Plain Rice w/ Chicken','250','R006');
+
+
+SELECT * FROM Food;
+
+DESC Billing;
+
+INSERT INTO billing values('B001','2023-03-16','Mutton Biryani',2,'1800','C001','R001');
+INSERT INTO billing values('B002','2022-03-16','Chicken Biryani',4,'2000','C002','R002');
+INSERT INTO billing values('B003','2021-03-16','Special Mutton Chaap',3,'1800','C003','R003');
+INSERT INTO billing values('B004','2020-03-16','Mutton Biryani w/ Potato',4,'3000''C004','R004');
+INSERT INTO billing values('B005','2019-03-16','Plain Rice w/ Mutton',5,'2500','C005','R005');
+INSERT INTO billing values('B006','2018-03-16','Plain Rice w/ Chicken',1,'300','C006','R006');
+
+SELECT * FROM billing;
+
+
+ALTER TABLE Billing add column najmur int (10);
+
+select * from billing;
+ALTER table Billing
+drop column najmur;
+select * from billing;
+
+UPDATE Billing SET billid=01 where quantity=1;
+UPDATE Billing SET billid='R006' where quantity=1;
+
+
+
+ALTER TABLE Billing add column name2 varchar(15) after billid;
+
+INSERT INTO Billing (name2) values("najmur");
+
+delete from billing where name2="Najmur";
+
+ALTER TABLE BILLING
+DROP COLUMN name2;
+
+TRUNCATE table billing;
+
+
+
+INSERT INTO billing values('B001','2023-03-16','Mutton Biryani',2,'1800','C001','R001');
+INSERT INTO billing values('B002','2022-03-16','Chicken Biryani',4,'2000','C002','R002');
+INSERT INTO billing values('B003','2021-03-16','Special Mutton Chaap',3,'1800','C003','R003');
+INSERT INTO billing values('B004','2020-03-16','Mutton Biryani w/ Potato',4,'3000''C004','R004');
+INSERT INTO billing values('B005','2019-03-16','Plain Rice w/ Mutton',5,'2500','C005','R005');
+INSERT INTO billing values('B006','2018-03-16','Plain Rice w/ Chicken',1,'300','C006','R006');
+
+
+UPDATE billing SET TotalAmt="500" WHERE quantity =1;
+
+
+select * from billing where TotalAmt="500";
+
+delete FROM billing where TotalAmt="500";
+
+
+
+----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+
+
+ROLLBACK,COMMIT,SAVE POINT
+-----------------------------------------------------------------------------------------
+
+START TRANSACTION;
+INSERT INTO billing values('B006','2018-03-16','Plain Rice w/ Chicken',1,'300','C006','R006');
+START TRANSACTION;
+INSERT INTO billing values('B006','2018-03-16','Plain Rice w/ Chicken',1,'300','C006','R006');
+COMMIT;
+START TRANSACTION;
+UPDATE billing set TotalAmt="500" where cusid="c006";
+SAVEPOINT upd;
+
+
+----------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------
+
+Drop table billing;
+
+CREATE TABLE Billing
+(BillId VARCHAR(20) PRIMARY KEY,
+Date date,
+FoodName varchar(50),
+Quantity int(20),
+TotalAmt int(10),
+CusId VARCHAR(20),
+foreign key(CusId) references Customer(CusId),
+ResId VARCHAR(20),
+Foreign key(ResId) references Restaurant(ResId)
+);
+
+INSERT INTO billing values('B001','2023-03-16','Mutton Biryani',2,'1800','C001','R001');
+INSERT INTO billing values('B002','2022-03-16','Chicken Biryani',4,'2000','C002','R002');
+INSERT INTO billing values('B003','2021-03-16','Special Mutton Chaap',3,'1800','C003','R003');
+INSERT INTO billing values('B004','2020-03-16','Mutton Biryani w/ Potato',4,'3000''C004','R004');
+INSERT INTO billing values('B005','2019-03-16','Plain Rice w/ Mutton',5,'2500','C005','R005');
+INSERT INTO billing values('B006','2018-03-16','Plain Rice w/ Chicken',1,'300','C006','R006');
+-----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+COPY TABLE WITH DATA ,COPY STRUCTURE
+--------------------------------------------------------------------------------------------------
+create table copytable(Id int );
+drop table copytable;
+
+CREATE TABLE copytable
+(ResId VARCHAR(20) primary key UNIQUE NOT NULL,
+Name varchar(50),
+Location varchar(50),
+Rating int(5)
+);
+
+
+INSERT INTO copytable SELECT * from Restaurant;
+
+drop table copytable;
+
+
+
+
+CREATE TABLE CopyStructure AS SELECT * FROM Restaurant WHERE 0;
+
+INSERT INTO CopyStructure values('R001','Arsalan Biryani','Baruipur, Kolkata 144',5);
+INSERT INTO CopyStructure values('R002','New chicken Biryani','Subhasgram, Kolkata 147',5);
+INSERT INTO CopyStructure values('R003','Babu Hotel','Hatisala, Kolkata 135',5);
+INSERT INTO CopyStructure values('R004','Asma Dhaba','Baruipur Station, Kolkata 144',4);
+INSERT INTO CopyStructure values('R005','Saiqa Hotel','Parkcicus Station, Kolkata 100',4);
+INSERT INTO CopyStructure values('R006','Awesome Restaurant','Bidhannagar, Kolkata 97',4);
+
+Drop table CopyStructure;
+
+
+
+
+----------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+
+
+
+WHERE,OR,AND,IN,NOT IN,ORDER BY, LIKE USING %,BETWEEN,MIN,MAX,COUNT,AVG,EXISTS,NOT EXISTS,GROUP BY,SUB QUERY/Nested quary,VIEW
+----------------------------------------------------------------------------------------------------
+
+
+select * from Restaurant WHERE Rating=5 OR ResId="R006";
+
+select * from Restaurant WHERE Rating=5 AND ResId="R001";
+
+SELECT SUM(TotalAmt) From Billing;
+
+SELECT COUNT(CusId) From Customer;
+
+SELECT MIN(Totalamt) From Billing;
+SELECT MAX(Totalamt) From Billing;
+SELECT SUM(Totalamt) From Billing;
+SELECT AVG(Totalamt) From Billing;
+
+
+
+-- Subquery to find customers who ordered at highly-rated restaurants
+SELECT C.FirstName, C.LastName
+FROM Customer C
+WHERE C.CusId IN (
+    SELECT DISTINCT B.CusId
+    FROM Billing B
+    INNER JOIN Restaurant R ON B.ResId = R.ResId
+    WHERE R.Rating = 5
+);
+
+-- Nested query to find employees working at the same restaurant as a specific customer
+SELECT E.EmpName
+FROM Employee E
+WHERE E.ResId = (
+    SELECT R.ResId
+    FROM Restaurant R
+    INNER JOIN Billing B ON R.ResId = B.ResId
+    WHERE B.CusId = 'C001' -- Replace 'C001' with the desired customer's CusId
+);
+
+
+
+
+
+
+
+CREATE VIEW Customer_details AS 
+SELECT CusId,FirstName From Customer;
+
+SELECT * FROM Customer_Details;
+
+ CREATE VIEW Billing_details AS
+SELECT BillId,Quantity,TotalAmt FROM BIlling;
+
+SELECT * FROM Billing_details;
+SELECT * FROM Billing_details WHERE Quantity<4;
+
+
+
+-- Find customers who have made billing orders
+SELECT C.FirstName, C.LastName
+FROM Customer C
+WHERE EXISTS (
+    SELECT 1
+    FROM Billing B
+    WHERE B.CusId = C.CusId
+);
+
+SELECT CusID FROM Billing WHERE EXISTS (SELECT CusID FROM Customer);
+
+
+
+
+-- Find customers who have not made billing orders
+SELECT C.FirstName, C.LastName
+FROM Customer C
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Billing B
+    WHERE B.CusId = C.CusId
+);
+
+SELECT CusID FROM Billing WHERE NOT EXISTS (SELECT CusID FROM Customer);
+
+
+SELECT Quantity FROM Billing WHERE EXISTS(SELECT FirstName FROM Customer WHERE Billing.CusId=Customer.CusId);
+SELECT Quantity FROM Billing WHERE EXISTS(SELECT FirstName FROM Customer WHERE Billing.CusId=Customer.CusId AND BillId="B001");
+ 
+ SELECT Quantity FROM Billing WHERE NOT EXISTS(SELECT FirstName FROM Customer WHERE Billing.CusId=Customer.CusId);
+
+SELECT TotalAmt FROM Billing
+GROUP by TotalAmt;
+
+SELECT TotalAmt FROM Billing
+GROUP by TotalAmt
+Order by TotalAmt ASC;
+ 
+
+SELECT TotalAmt FROM Billing
+GROUP by TotalAmt
+Order by TotalAmt DESC;
+
+SELECT TotalAmt from billing Where quantity >2;
+
+SELECT * From Billing WHERE TotalAmt IN( SELECT TotalAmt FROM Billing where Quantity>2);
+
+SELECT * From Billing WHERE Foodname IN( SELECT FoodName FROM Billing where Quantity>2 AND TotalAmt>500);
+SELECT * From Billing WHERE Foodname NOT IN( SELECT FoodName FROM Billing where Quantity>2 AND TotalAmt>500);
+
+UPDATE Billing SET TotalAmt="1500" WHERE Quantity<2;
+
+
+ALTER TABLE Customer ADD Column Age int(3) After LastName;
+
+
+UPDATE Customer SET Age=20 Where CusId="C001";
+UPDATE Customer SET Age=30 Where CusId="C002";
+UPDATE Customer SET Age=21 Where CusId="C003";
+UPDATE Customer SET Age=40 Where CusId="C004";
+UPDATE Customer SET Age=50 Where CusId="C005";
+
+SELECT * FROM Customer WHERE Age IN(50);
+
+SELECT * FROM Customer WHERE Age IN(20,21,30);
+
+SELECT * FROM Customer WHERE Age NOT IN(20,21,30);
+
+SELECT Age FROM Customer WHERE Age BETWEEN 20 AND 40;
+
+SELECT * from Billing WHERE Quantity IN(1,2,3);
+
+
+SELECT * FROM Billing order by TotalAmt;
+
+SELECT * FROM Billing order by TotalAmt DESC;
+SELECT * FROM Billing order by TotalAmt ASC;
+
+SELECT ResId, Name, Rating
+FROM Restaurant
+ORDER BY Rating DESC;
+
+
+SELECT * FROM Employee WHERE EmpName LIKE "n%";
+SELECT * FROM Employee WHERE EmpName LIKE "%n";
+SELECT * FROM Employee WHERE EmpName LIKE "%n_";
+SELECT * FROM Employee WHERE EmpName LIKE "%_n";
+SELECT * FROM Employee WHERE EmpName LIKE "n__%";
+
+
+
+-----------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+
+TAMPORARY TABLE
+-----------------------------------------------------------------------------
+CREATE TEMPORARY TABLE LocalTemptable (
+    Userid INT,
+    Username VARCHAR(50),
+    Useraddress VARCHAR(150)
+);
+
+CREATE TABLE #LocalTemptable (
+    Userid INT,
+    Username VARCHAR(50),
+    Useraddress VARCHAR(150)
+);
+
+SELECT * FROM LocalTemptable;
+
+
+CREATE TEMPORARY TABLE GlobalTempTable (
+    Userid INT,
+    Username VARCHAR(50),
+    Useraddress VARCHAR(150)
+);
+
+CREATE TABLE ##GlobalTempTable (
+    Userid INT,
+    Username VARCHAR(50),
+    Useraddress VARCHAR(150)
+);
+
+SELECT * FROM GlobalTempTable;
+
+---------------------------------------------------------------
+-----------------------------------------------------------------
+
+
+DISTINCT,LIMIT,UNION ,INTERSECTION,MINUS
+--------------------------------------------------------------
+
+SELECT * FROM Food WHERE Price>500;
+
+SELECT * FROM Food;
+
+SELECT DISTINCT FoodName,Price FROM Food;
+
+SELECT * FROM Billing;
+SELECT * FROM Billing LIMIT 3;
+SELECT * FROM Billing LIMIT 2 OFFSET 3;
+SELECT * FROM Billing LIMIT 2,3;
+
+SELECT * FROM Restaurant
+left join food on Restaurant.ResId=Food.ResId
+union
+SELECT * FROM Restaurant
+right join food on Restaurant.ResId=Food.ResId;
+
+
+SELECT FoodName FROM Food
+UNION
+SELECT TotalAmt FROM Billing;
+
+SELECT FoodName FROM Food WHERE PRICE>500 
+UNION ALL
+SELECT TotalAmt FROM Billing;
+
+SELECT FoodId,FoodName,price FROM Food;
+
+SELECT FoodName FROM Food
+INTERSECT
+SELECT TotalAmt FROM Billing;
+
+
+SELECT * FROM Food
+MINUS
+SELECT * FROM Billing;
+
+
+
+ CREATE TABLE Old_Worker_Info  
+(  
+Worker_ID INT NOT NULL PRIMARY KEY,    
+Worker_First_Name VARCHAR (100),    
+Worker_Last_Name VARCHAR (100),    
+Worker_Dept_Id INT NOT NULL,  
+Worker_Joining_Date Varchar (80),  
+Worker_City Varchar (80),  
+Worker_Salary INT   
+);  
+
+INSERT INTO Old_Worker_Info VALUES ('1001','Arush','Sharma','4001','2020-01-02','Delhi', '20000');  
+INSERT INTO Old_Worker_Info VALUES ('1002','Bulbul','Roy','4002','2019-12-31','Delhi','38000');  
+INSERT INTO Old_Worker_Info VALUES ('1004','Saurabh','Sharma','4001','2020-10-10','Mumbai','45000');  
+  
+
+
+
+CREATE TABLE New_Worker_Info  
+(  
+Worker_ID INT NOT NULL PRIMARY KEY,    
+Worker_First_Name VARCHAR (100),    
+Worker_Last_Name VARCHAR (100),    
+Worker_Dept_Id INT NOT NULL,  
+Worker_Joining_Date Varchar (80),  
+Worker_City Varchar (80),  
+Worker_Salary INT   
+);  
+INSERT INTO New_Worker_Info VALUES ('1010','Ankush','Roy','4004','2018-10-02','Delhi','25000');  
+INSERT INTO New_Worker_Info VALUES ('1001','Arush','Sharma','4001','2020-01-02','Delhi','20000');  
+INSERT INTO New_Worker_Info VALUES ('1009','Raj','Singhania','4005','2021-05-10','Noida','40000');  
+
+
+SELECT * FROM Old_Worker_Info
+ MINUS
+ SELECT * FROM New_Worker_Info;  
+
+
+
+
+
+SELECT *
+FROM Old_Worker_Info
+INNER JOIN New_Worker_Info
+ON Old_Worker_Info.Worker_ID = New_Worker_Info.Worker_ID;
+
+
+
+SELECT * FROM Old_Worker_Info
+ INTERSECT
+ SELECT * FROM New_Worker_Info;  
+
+
+--DROP TABLE Old_Worker_Info;
+--DROP TABLE New_Worker_Info;
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------
+
+JOIN
+---------------------------------------------------------------------
+
+
+SELECT * FROM  Restaurant
+INNER JOIN Employee on
+Restaurant.ResId=Employee.ResId;
+
+
+
+SELECT * FROM Restaurant 
+LEFT JOIN Food on
+Restaurant.ResId=Food.ResId;
+
+ 
+SELECT * FROM Customer 
+Right JOIN Billing on
+Customer.CusId=Billing.CusId;
+
+SELECT * FROM Billing
+Right JOIN Customer ON
+Billing.CusId=Customer.CusId;
+
+
+
+SELECT * FROM  Employee
+INNER JOIN Restaurant on
+Restaurant.ResId=Employee.ResId;
+
+
+SELECT * FROM Restaurant 
+RIGHT JOIN Food on
+Restaurant.ResId=Food.ResId;
+
+SELECT * FROM Restaurant
+FULL OUTER JOIN Food ON
+Restaurant.ResId=Food.ResId;
+
+
+
+SELECT * FROM Restaurant
+left join food on Restaurant.ResId=Food.ResId
+union
+SELECT * FROM Restaurant
+right join food on Restaurant.ResId=Food.ResId;
+
+
+SELECT Restaurant.ResId, Restaurant.Name, Employee.EmpName
+FROM Restaurant
+JOIN Employee ON Restaurant.ResId = Employee.ResId;
+
+--------------------------------------------------------------------------
+------------------------------------------------------------------------
+
+Grant, Revoke
+--------------------------------------------------------
+
+CREATE USER Najmur@2001 identified by "NAJMUR123";
+SHOW GRANTS for Najmur@2001;
+GRANT ALL ON Assignment.* TO Najmur@2001;
+GRANT EXECUTE ON  function TotalAmt TO Najmur@2001; 
+
+REVOKE ALL, GRANT OPTION FROM Najmur@2001;  
+
+GRANT SELECT, UPDATE, INSERT ON Assignment TO Najmur@2001; 
+SHOW GRANTS FOR Najmur@2001;
+REVOKE UPDATE,INSERT ON Assignment.* FROM Najmur@2001;
+
+
+--------------------------------------------------------
+----------------------------------------------------------
+
+
+Index
+--------------------------------------------
+
+
+CREATE INDEX idx_Rating
+ON Restaurant (Rating);
+
+
+SELECT *
+FROM Restaurant
+WHERE Rating = 5;
+
+SELECT Restaurant.ResId, Restaurant.Name, Employee.EmpName
+FROM Restaurant
+JOIN Employee ON Restaurant.ResId = Employee.ResId;
+
+
+
+--------------------------------------------------------------------
+---------------------------------------------------------------------
+
+Function
+-------------------------------------------------------------
+-- Create a simple scalar function that adds two numbers
+delimiter//
+CREATE FUNCTION AddNumbers(a INT, b INT) RETURNS INT
+BEGIN
+    DECLARE result INT;
+    SET result = a + b;
+    RETURN result;
+END
+//delimiter
+
+SELECT AddNumbers(5, 3) AS Sum;
+
+
+
+
+-- Create a scalar function to calculate the area of a circle
+CREATE FUNCTION CalculateCircleArea(radius FLOAT) RETURNS FLOAT
+BEGIN
+    DECLARE area FLOAT;
+    SET area = 3.14159 * radius * radius; -- Assuming Pi as 3.14159
+    RETURN area;
+END;
+
+-- Use the function in a query
+SELECT CalculateCircleArea(5.0) AS CircleArea;
+
+ 
+
+
+-------------------------------------------------------
+-------------------------------------------------------
+
+Procedure
+---------------------------------------------------
+CREATE TABLE STUDENT (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    age INT,
+    salary DECIMAL(10, 2)
+);
+
+INSERT INTO STUDENT VALUES('1','Najmur','22',25000);
+
+
+
+
+DELIMITER //
+CREATE PROCEDURE studentList()
+BEGIN
+    SELECT name, age, salary
+    FROM STUDENT
+    ORDER BY salary;
+END //
+DELIMITER ;
+
+CALL studentList();
+
+ 
+
+delimiter &
+create procedure checloop()
+begin
+declare a int(10) default 0;
+declare strng varchar(100) default '';
+printevennum:loop
+if
+a=12 then leave printevennum;
+end if;
+set a=a+1;
+if mod(a,2)=0 then
+set strng = concat(strng,a,',');
+else
+iterate printevennum;
+end if;
+end loop;
+select strng;
+end &
+delimiter ;
+
+call  checloop();
+
+
+DELIMITER //
+
+CREATE PROCEDURE CalculateSum(IN num1 INT, IN num2 INT)
+BEGIN
+    SELECT num1 + num2 AS Result;
+END //
+
+DELIMITER ;
+
+
+
+
+Drop Table Student;
+
+-------------------------------------------------------
+----------------------------------------------------------
+
+Exception Handling
+--------------------------------------
+BEGIN TRY
+    DECLARE @cusId VARCHAR(20) = 'C003';
+    DECLARE @resId VARCHAR(20) = 'R003';
+    DECLARE @billTotal INT;
+    
+    -- Attempt to retrieve the billing total for the customer and restaurant
+    SELECT @billTotal = TotalAmt
+    FROM Billing
+    WHERE CusId = @cusId AND ResId = @resId;
+    
+    IF @billTotal IS NULL
+    BEGIN
+        -- Handle the exception when the billing record is not found
+        PRINT 'Billing record not found for Customer ' + @cusId + ' and Restaurant ' + @resId;
+    END
+    ELSE
+    BEGIN
+        -- Handle the successful retrieval
+        PRINT 'Billing total: ' + CAST(@billTotal AS VARCHAR);
+    END
+END TRY
+BEGIN CATCH
+    -- Handle unexpected errors
+    PRINT 'An error occurred: ' + ERROR_MESSAGE();
+END CATCH;
+
+
+
+
+
+
+
+
+-------------------------------------------------------
+---------------------------------------------------
+
+Loops - While Do, Repeat, Loop, Cursor
+-----------------------------------------------------
+delimiter &
+create procedure checloop()
+begin
+declare a int(10) default 0;
+declare strng varchar(100) default '';
+printevennum:loop
+if
+a=12 then leave printevennum;
+end if;
+set a=a+1;
+if mod(a,2)=0 then
+set strng = concat(strng,a,',');
+else
+iterate printevennum;
+end if;
+end loop;
+select strng;
+end &
+delimiter ;
+
+call  checloop();
+
+
+
+
+DECLARE  
+i NUMBER := 1;  
+BEGIN  
+LOOP  
+EXIT WHEN i>10;  
+DBMS_OUTPUT.PUT_LINE(i);  
+i := i+1;  
+END LOOP;  
+END;  
+
+
+
+
+-- while loop
+DECLARE  
+i INTEGER := 1;  
+BEGIN  
+WHILE i <= 10 LOOP  
+DBMS_OUTPUT.PUT_LINE(i);  
+i := i+1;  
+END LOOP;  
+END;  
+
+--FOR LOOP
+DECLARE   
+VAR1 NUMBER;  
+BEGIN   
+VAR1:=10;  
+FOR VAR2 IN 1..10  
+LOOP  
+DBMS_OUTPUT.PUT_LINE (VAR1*VAR2);  
+END LOOP;  
+END;  
+
+--Repeat
+
+SELECT * FROM Customer;
+
+SELECT FirstName, REPEAT(FirstName, 3) AS REPEAT_3FirstName FROM Customer;  
+
+
+
+
+--CURSOR
+
+-- Declare a cursor
+DECLARE myCursor CURSOR FOR
+SELECT ResId, Name
+FROM Restaurant;
+
+-- Declare variables to store cursor results
+DECLARE @ResId VARCHAR(20);
+DECLARE @Name VARCHAR(50);
+
+-- Open the cursor
+OPEN myCursor;
+
+-- Fetch the first row into variables
+FETCH NEXT FROM myCursor INTO @ResId, @Name;
+
+-- Start a loop to process each row
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    -- Display the restaurant information
+    PRINT 'Restaurant ID: ' + @ResId + ', Name: ' + @Name;
+
+    -- Fetch the next row
+    FETCH NEXT FROM myCursor INTO @ResId, @Name;
+END
+
+-- Close and deallocate the cursor
+CLOSE myCursor;
+DEALLOCATE myCursor;
+
+
+
+-----------------------------------------------------------
+------------------------------------------------------------
+Trigger
+-----------------------------------
+
+CREATE TABLE Main(id int,salary int);
+INSERT INTO Main Values(1,10000);
+INSERT INTO Main Values(2,20000);
+
+CREATE TABLE Backup(id int,salary int);
+
+--DELETE
+
+DELIMITER //
+
+CREATE TRIGGER Najmur
+BEFORE DELETE ON Main
+FOR EACH ROW
+BEGIN
+    INSERT INTO Backup (id, salary)
+    VALUES (OLD.id, OLD.salary);
+END;
+//
+
+DELIMITER ;
+
+DELETE from Main WHERE id=1;
+
+select * from backup;
+
+--update
+
+DELIMITER //
+
+CREATE TRIGGER NajmurUpdate
+AFTER UPDATE ON Main
+FOR EACH ROW
+BEGIN
+    INSERT INTO Backup (id, salary)
+    VALUES (OLD.id, OLD.salary);
+END;
+//
+
+DELIMITER ;
+
+-- Update the salary for id=2 in the Main table
+UPDATE Main
+SET salary = 12000
+WHERE id = 2;
+
+SELECT * FROM Backup;
+
+
+
+
+
+
+DELIMITER //
+
+CREATE TABLE ChangeLog (
+    ChangeID INT AUTO_INCREMENT PRIMARY KEY,
+    ChangeType VARCHAR(10),
+    ChangedColumn VARCHAR(50),
+    OldValue VARCHAR(255),
+    NewValue VARCHAR(255),
+    ChangeDate TIMESTAMP
+);
+
+CREATE TRIGGER LogChangesAfterUpdate
+AFTER UPDATE ON Main
+FOR EACH ROW
+BEGIN
+    IF OLD.salary <> NEW.salary THEN
+        INSERT INTO ChangeLog (ChangeType, ChangedColumn, OldValue, NewValue, ChangeDate)
+        VALUES ('UPDATE', 'salary', CAST(OLD.salary AS CHAR), CAST(NEW.salary AS CHAR), NOW());
+    END IF;
+END;
+//
+
+DELIMITER ;
+
+
+UPDATE Main
+SET salary = 22000
+WHERE id = 2;
+
+SELECT * FROM ChangeLog;
+
+
+
+------------Insert
+DELIMITER //
+
+CREATE TRIGGER NajmurInsert
+AFTER UPDATE ON Main
+FOR EACH ROW
+BEGIN
+    INSERT INTO Backup (id, salary)
+    VALUES (OLD.id, OLD.salary);
+END;
+//
+
+DELIMITER ;
+
+INSERT INTO MAIN Values('3','50000');
+
+
+SELECT * FROM Backup;
+
+
+Drop Table Backup;
+Drop Table ChangeLog;
+Drop Table Main;
+
+
+
+
+
+-------------------------------------------------------------
+--------------------------------------------------------------
+
+      END
